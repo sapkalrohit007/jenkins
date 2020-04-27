@@ -75,6 +75,8 @@ def deploy1(environment) {
 		println "Environment not valid"
 		System.exit(0)
 	}
+	sh "/usr/local/bin/docker container stop ${containerName}"
+	sh "/usr/local/bin/docker container rm ${containerName}"
 	sh "/usr/local/bin/docker  run -d -p ${port}:8080 --name ${containerName} sapkalrohit007/spring-boot:${BUILD_NUMBER}"
 
 }
