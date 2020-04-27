@@ -14,7 +14,7 @@ pipeline {
                 buildApp() 
                 }
 		}
-	stage("Build") {
+	stage("Deploy Image") {
             steps { 
         	deployImage()	         
                 }
