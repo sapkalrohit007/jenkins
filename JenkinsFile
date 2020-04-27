@@ -35,7 +35,7 @@ pipeline {
 
         stage("Deploy - Live") {
             steps {
-                 deploy(environment : "live") 
+                 deploy("live") 
                  }
 		}   
 	}
