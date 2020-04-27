@@ -17,7 +17,7 @@ pipeline {
 
         stage("Deploy - Dev") {
             steps { 
-                deploy(environment : "dev") 
+                deploy("dev") 
                 }
 		}
 
@@ -35,7 +35,7 @@ pipeline {
 
         stage("Deploy - Live") {
             steps {
-                 deploy(environment : "live",params : null) 
+                 deploy("live") 
                  }
 		}   
 	}
@@ -54,7 +54,7 @@ def buildApp() {
 	sh "/usr/local/bin/docker image build -t sapkalrohit007/spring-boot:${BUILD_NUMBER} ."
 }
 
-def deploy(environment, params) {
+def deploy(environment) {
 
 	def containerName = ''
 	def port = ''
