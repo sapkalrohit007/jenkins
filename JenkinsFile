@@ -6,5 +6,10 @@ pipeline {
                 sh '/usr/local/Cellar/maven/3.6.3_1/libexec/bin/mvn clean install'
             }
         }
+        stage('Create docker image') {
+            steps {
+                sh 'docker image -t sapkalrohit007/spring-boot .'
+            }
+        }
     }
 }
