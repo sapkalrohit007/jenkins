@@ -17,13 +17,13 @@ pipeline {
 
         stage("Deploy - Dev") {
             steps { 
-                deploy(environment : 'dev') 
+                deploy(environment : "dev") 
                 }
 		}
 
         stage("Deploy - Stage") {
             steps {
-                 deploy(environment : 'stage') 
+                 deploy(environment : "stage") 
                  }
 		}
 
@@ -35,7 +35,7 @@ pipeline {
 
         stage("Deploy - Live") {
             steps {
-                 deploy(environment : 'live') 
+                 deploy(environment : "live") 
                  }
 		}   
 	}
