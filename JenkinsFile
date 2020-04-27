@@ -53,12 +53,16 @@ def approve() {
 
 }
 def deployImage(){
+	withCredentials([string(credentialsId: 'docker-pass', variable: 'password')]) {
+		sh "/usr/local/bin/docker login -u sapkalrohit007 -p ${password}"
+	}
+	
 	sh "/usr/local/bin/docker push sapkalrohit007/spring-boot:${BUILD_NUMBER}"
 }
 
 def buildApp() {
     sh "/usr/local/Cellar/maven/3.6.3_1/libexec/bin/mvn clean install"
-	sh "/usr/local/bin/docker image build -t sapkalrohit007/spring-boot:${BUILD_NUMBER} ."
+    sh "/usr/local/bin/docker image build -t sapkalrohit007/spring-boot:${BUILD_NUMBER} ."
 }
 
 def deploy1(environment) {
