@@ -14,6 +14,11 @@ pipeline {
                 buildApp() 
                 }
 		}
+	stage("Build") {
+            steps { 
+        	deployImage()	         
+                }
+	}
 
         stage("Deploy - Dev") {
             steps { 
@@ -47,7 +52,9 @@ def approve() {
 	}
 
 }
-
+def deployImage(){
+	sh "/usr/local/bin/docker push sapkalrohit007/spring-boot:${BUILD_NUMBER}"
+}
 
 def buildApp() {
     sh "/usr/local/Cellar/maven/3.6.3_1/libexec/bin/mvn clean install"
