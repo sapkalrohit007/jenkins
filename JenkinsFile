@@ -1,20 +1,75 @@
+#!/usr/bin/groovy
+
 pipeline {
     agent any
-    stages {
-        stage('Build') {
-            steps {
-                sh '/usr/local/Cellar/maven/3.6.3_1/libexec/bin/mvn clean install'
-            }
-        }
-        stage('Create docker image') {
-            steps {
-                sh '/usr/local/bin/docker image build -t sapkalrohit007/spring-boot1 .'
-            }
-        }
-         stage('Create container') {
-            steps {
-                sh '/usr/local/bin/docker container run -d -p 8081:8080 sapkalrohit007/spring-boot1'
-            }
-        }
+
+    options {
+        disableConcurrentBuilds()
     }
+
+    stages {
+
+        stage("Build") {
+            steps { buildApp() }
+		}
+
+        stage("Deploy - Dev") {
+            steps { deploy('dev') }
+		}
+
+        stage("Deploy - Stage") {
+            steps { deploy('stage') }
+		}
+
+        stage("Approve") {
+            steps { approve() }
+		}
+
+        stage("Deploy - Live") {
+            steps { deploy('live') }
+		}   
+	}
+
+}
+
+
+def buildApp() {
+        sh "/usr/local/Cellar/maven/3.6.3_1/libexec/bin/mvn clean install"
+	sh "/usr/local/bin/docker image build -t sapkalrohit007/spring-boot:${BUILD_NUMBER} ."
+}
+
+def approve() {
+
+	timeout(time:1, unit:'DAYS') {
+		input('Do you want to deploy to live?')
+	}
+
+}
+
+def deploy(environment) {
+
+	def containerName = ''
+	def port = ''
+
+	if ("${environment}" == 'dev') {
+		containerName = "app_dev"
+		port = "8888"
+	} 
+	else if ("${environment}" == 'stage') {
+		containerName = "app_stage"
+		port = "88"
+	}
+	else if ("${environment}" == 'live') {
+		containerName = "app_live"
+		port = "80"
+	}
+	else {
+		println "Environment not valid"
+		System.exit(0)
+	}
+
+	sh "/usr/local/bin/docker  ps -f name=${containerName} -q | xargs --no-run-if-empty docker stop"
+	sh "/usr/local/bin/docker  ps -a -f name=${containerName} -q | xargs -r docker rm"
+	sh "/usr/local/bin/docker  run -d -p ${port}:5000 --name ${containerName} sapkalrohit007/spring-boot:${BUILD_NUMBER}"
+
 }
