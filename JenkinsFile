@@ -10,29 +10,38 @@ pipeline {
     stages {
 
         stage("Build") {
-            steps { buildApp() }
+            steps { 
+                buildApp() 
+                }
 		}
 
         stage("Deploy - Dev") {
-            steps { deploy('dev') }
+            steps { 
+                deploy(environment : 'dev') 
+                }
 		}
 
         stage("Deploy - Stage") {
-            steps { deploy('stage') }
+            steps {
+                 deploy(environment : 'stage') 
+                 }
 		}
 
         stage("Approve") {
-            steps { approve() }
+            steps { 
+                approve() 
+                }
 		}
 
         stage("Deploy - Live") {
-            steps { deploy('live') }
+            steps {
+                 deploy(environment : 'live') 
+                 }
 		}   
 	}
 
 }
 def approve() {
-
 	timeout(time:1, unit:'DAYS') {
 		input('Do you want to deploy to live?')
 	}
